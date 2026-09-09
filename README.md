@@ -160,7 +160,7 @@ The repository can contain the following major projects:
 ## Suggested Repository Structure
 
 ```text
-ai-llm-engineering-course/
+AI-Engineer/
 ├── README.md
 ├── LICENSE
 ├── .gitignore
