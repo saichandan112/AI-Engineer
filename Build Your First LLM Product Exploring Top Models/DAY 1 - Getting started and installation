@@ -1,114 +1,93 @@
-# LLM Development Environment Setup and Getting Started Guide
+# LLM Development Environment Setup Guide
 
-## Purpose
+## 1. Purpose
 
-This guide documents the learning process for setting up a local development environment for building applications with Large Language Models (LLMs). It is designed to be stored in a Git repository and used as a repeatable installation, validation, and troubleshooting reference.
+This guide explains how to prepare a Windows computer for building applications with Large Language Models (LLMs). It covers Git, an IDE, `uv`, Python environments, API credentials, validation, security, and common setup problems.
 
-By the end of this guide, you will be able to:
+By the end, you should be able to:
 
-- Understand the purpose of an LLM development environment.
-- Install and verify the required development tools.
-- Clone a Git repository to your computer.
-- Open the correct project folder in an Integrated Development Environment (IDE).
-- Install and use `uv` for Python version, virtual environment, and dependency management.
-- Configure API credentials securely with a `.env` file.
-- Validate that the project is ready to run.
-- Diagnose common Windows setup problems.
-- Follow safe practices for secrets, dependencies, and AI-generated suggestions.
+- Clone and open a Git project correctly.
+- Create a reproducible Python environment with `uv`.
+- configure model access securely.
+- Run and validate a basic LLM application.
+- Troubleshoot common Windows setup issues.
+
+> **Important correction:** The credential file is named `.env`, not `EMV`, `.env.txt`, or `env`.
 
 ---
 
-## 1. What Is Being Set Up?
+## 2. What You Are Building
 
-An LLM application usually consists of the following layers:
+An LLM solution normally contains:
 
-1. **Application code** written in Python, TypeScript, JavaScript, or another language.
-2. **A model provider or local model runtime** that supplies the language model.
-3. **Dependencies** such as SDKs, HTTP clients, notebook tools, and environment-variable loaders.
-4. **Configuration and secrets** such as API keys.
-5. **A development environment** in which the code can be edited, run, tested, and debugged.
-6. **Version control** to track changes and support collaboration.
+1. **Application code** written in Python, TypeScript, or JavaScript.
+2. **A model** accessed through a hosted API or local runtime.
+3. **Dependencies** such as model SDKs and notebook tools.
+4. **Configuration** such as model names and API endpoints.
+5. **Secrets** such as API keys.
+6. **Tests, validation, and logging** to confirm safe operation.
+7. **Git version control** to track and manage changes.
 
-The initial goal is not to train a frontier model. The goal is to build an application that sends a request to an existing model and processes the response.
-
-> **Terminology note:** “LM” means Language Model. “LLM” means Large Language Model. In practical application development, the term LLM is commonly used for models capable of understanding and generating natural language at scale.
-
----
-
-## 2. Setup Roadmap
-
-The setup can be organized into five stages:
-
-1. **Prepare the computer**
-   - Check Windows prerequisites.
-   - Install Git.
-   - Understand basic command-line navigation.
-
-2. **Get and open the project**
-   - Create a projects directory.
-   - Clone the repository.
-   - Install and open an IDE.
-   - Select the repository root as the project folder.
-
-3. **Prepare the Python environment**
-   - Install `uv`.
-   - Install the required Python version and dependencies.
-   - Activate or use the project environment.
-
-4. **Configure model access**
-   - Select a paid API, free API, or local-model option.
-   - Store credentials in a `.env` file.
-   - Prevent credentials from being committed to Git.
-
-5. **Validate and start development**
-   - Run setup checks.
-   - Open the first notebook or application.
-   - Make a small model request.
-   - Record problems and solutions.
+The first objective is not to train an LLM. It is to build an application that sends input to an existing model and safely handles its response.
 
 ---
 
-## 3. Important Terms
+## 3. Setup Roadmap
 
-### 3.1 Git
+Complete the environment in this order:
 
-Git is a distributed version-control system. It records changes to files and allows developers to create branches, review history, compare versions, and collaborate safely.
+1. Check Windows, PowerShell, permissions, VPN, proxy, and path settings.
+2. Install Git and clone the project.
+3. Install an IDE and open the repository root.
+4. Install `uv` and synchronize the Python environment.
+5. Select a hosted or local model option.
+6. create a secure `.env` file.
+7. Validate Git, Python, dependencies, credentials, and model connectivity.
+8. Run the first small LLM experiment.
 
-Common Git commands:
+---
 
-```powershell
-git --version
-git clone <repository-url>
-git status
-git add .
-git commit -m "Describe the change"
-git pull
-git push
-```
+## 4. Essential Terms
 
-### 3.2 Git Hosting Platform
+### Language Model and LLM
 
-A Git hosting platform stores Git repositories on the internet and adds collaboration features such as pull requests, issues, code review, access control, and automation.
+A **Language Model**, or LM, processes and generates language. A **Large Language Model**, or LLM, is trained at a much larger scale and can perform tasks such as summarization, extraction, classification, question answering, and code assistance.
 
-Git is the version-control technology. A hosting platform is a service that stores and helps manage Git repositories.
+### Frontier Model
 
-### 3.3 Repository
+A frontier model is a highly capable current-generation AI model near the leading edge of available performance. It is usually accessed through an API because running it locally may require significant computing resources.
 
-A repository, often shortened to **repo**, is a project directory tracked by Git. It usually contains source code, configuration, documentation, tests, and commit history.
+### Transformer
 
-### 3.4 Clone
+A Transformer is a neural-network architecture used by many modern LLMs. It uses attention mechanisms to identify relationships between tokens and understand context.
 
-Cloning downloads a complete working copy of a remote Git repository to the local computer.
+### Token
 
-```powershell
-git clone <repository-url>
-```
+A token is a unit of text processed by a model. It may be a word, part of a word, punctuation, or another fragment. Context limits, usage, latency, and cost are often measured in tokens.
 
-This creates a new subdirectory containing the project.
+### Prompt
 
-### 3.5 Project Root
+A prompt is the input sent to a model. It may contain instructions, user input, examples, context, constraints, and output-format requirements.
 
-The project root is the top-level directory of the repository. It often contains files and directories such as:
+### Inference
+
+Inference means using an already trained model to generate output. Calling an LLM API performs inference, not model training.
+
+### API and API Key
+
+An **API** allows applications to communicate. An **API key** authenticates requests to a service and must be protected like a password.
+
+### Git and Git Hosting
+
+**Git** is a version-control system that tracks file changes, branches, and history. A **Git hosting platform** stores repositories online and adds collaboration features such as pull requests, issues, and code review.
+
+### Repository and Clone
+
+A **repository**, or repo, is a project tracked by Git. **Cloning** downloads a working copy of a remote repository to your computer.
+
+### Project Root
+
+The project root is the top-level repository folder. It often contains:
 
 ```text
 project-root/
@@ -122,276 +101,173 @@ project-root/
 └── notebooks/
 ```
 
-The project root, not its parent and not an individual subfolder, should normally be opened in the IDE.
+Open this folder in the IDE, rather than its parent or an individual subfolder.
 
-### 3.6 Command Line, Terminal, and PowerShell
+### IDE
 
-A command-line interface allows you to interact with the operating system by entering text commands.
+An Integrated Development Environment is used to edit, run, test, navigate, and debug code. AI-assisted features are optional and their suggestions must always be reviewed.
 
-On Windows, PowerShell is a common terminal shell. Useful commands include:
+### Python Environment and Dependency
 
-```powershell
-pwd               # Display the current directory
-Get-ChildItem     # List files and directories
-ls                # Alias for Get-ChildItem
-cd <directory>    # Change directory
-cd ..             # Move to the parent directory
-mkdir <name>      # Create a directory
-Clear-Host        # Clear the screen
-```
+A Python environment isolates the Python interpreter and packages for one project. A dependency is an external package required by that project.
 
-The prompt displays the current working directory. Always check it before running commands that create, delete, or modify files.
+### `uv`
 
-### 3.7 IDE
+`uv` manages Python versions, virtual environments, dependencies, and lock files. Dependencies are commonly declared in `pyproject.toml`, while exact resolved versions may be stored in `uv.lock`.
 
-An Integrated Development Environment is an application used to edit, navigate, run, test, and debug code. An AI-assisted IDE can also suggest code and explain errors. These suggestions must still be reviewed and tested.
+### `.env` and Environment Variable
 
-### 3.8 Python Environment
-
-A Python environment isolates the interpreter and packages used by one project from those used by other projects. Isolation reduces dependency conflicts and makes the setup reproducible.
-
-### 3.9 Dependency
-
-A dependency is an external package required by the project. Examples include a model-provider SDK, an environment-variable loader, a notebook runtime, and testing libraries.
-
-### 3.10 `uv`
-
-`uv` is a tool for managing Python versions, virtual environments, packages, dependencies, and project lock files. It can replace several separate tools in a Python workflow.
-
-A project may define dependencies in `pyproject.toml` and exact resolved versions in `uv.lock`.
-
-### 3.11 Frontier Model
-
-A frontier model is a highly capable, current-generation AI model near the leading edge of available model performance. Such models are commonly accessed through an API rather than installed directly on a normal development computer.
-
-### 3.12 API
-
-An Application Programming Interface lets one application communicate with another. An LLM API typically accepts a structured request containing instructions and input, then returns generated output and metadata.
-
-### 3.13 API Key
-
-An API key is a secret credential used to authenticate calls to a service. Anyone possessing the key may be able to use the associated account and consume its quota or funds.
-
-Never:
-
-- Paste a key into source code.
-- Commit a key to Git.
-- Include a real key in screenshots, logs, notebooks, issues, or chat messages.
-- Use a shared production key for personal experiments.
-
-### 3.14 `.env` File
-
-A `.env` file stores environment variables locally using key-value pairs.
+An environment variable stores configuration outside source code. A `.env` file is a local text file containing variables such as:
 
 ```dotenv
 MODEL_API_KEY=replace_with_your_real_key
 ```
 
-The filename is exactly `.env`. It is not `EMV`, `.env.txt`, `env`, or `.ENV`.
+### Notebook
 
-### 3.15 Environment Variable
-
-An environment variable is a named configuration value available to a running process. It allows configuration to remain separate from source code.
-
-### 3.16 Notebook
-
-A notebook is an interactive document containing executable code cells, explanatory text, and outputs. It is useful for experiments and learning, but reusable application logic should gradually be moved into normal source files and covered by tests.
-
-### 3.17 Transformer
-
-A Transformer is a neural-network architecture that processes relationships among tokens using mechanisms such as attention. Modern LLMs commonly use Transformer-based architectures. At this stage, it is enough to understand that a Transformer uses contextual relationships to process and generate sequences efficiently.
-
-### 3.18 Token
-
-A token is a unit of text processed by a language model. A token can be a word, part of a word, punctuation, or another text fragment. API usage, context limits, latency, and cost are often measured partly in tokens.
-
-### 3.19 Prompt
-
-A prompt is the input given to a model. It may include system instructions, user input, examples, context, output-format rules, and constraints.
-
-### 3.20 Inference
-
-Inference is the process of using a trained model to generate an output. Calling an LLM API normally performs inference, not model training.
+A notebook combines executable code, documentation, and outputs. It is useful for experiments, but reusable logic should eventually move into tested source files.
 
 ---
 
-## 4. Prerequisites
+## 5. Prerequisites and Safety Checks
 
-Recommended prerequisites for a Windows workstation:
+Before installing anything, confirm that you have:
 
-- A supported 64-bit version of Windows.
+- A supported 64-bit Windows system.
 - Permission to install development software.
-- A stable internet connection.
-- Adequate free disk space for source code, Python versions, and packages.
-- Access to the required Git repository.
-- A modern browser.
-- An API account, approved free alternative, or local model runtime.
-- Basic familiarity with files, folders, and command-line navigation.
+- A stable internet connection and enough disk space.
+- Access to the required repository.
+- An approved model API or local model runtime.
+- Basic knowledge of files, directories, and command-line navigation.
 
-In a corporate environment, also verify:
+In a corporate environment, also check:
 
-- Whether software installation requires administrator approval.
-- Whether a VPN, proxy, firewall, antivirus system, or endpoint policy affects downloads.
-- Whether public model APIs are approved for use.
-- Whether company or customer data is allowed to leave the controlled environment.
-- Whether credentials must be stored in an approved secrets manager.
+- Whether installations require administrator approval.
+- Whether a VPN, proxy, firewall, antivirus, or endpoint policy affects downloads.
+- Whether public AI services are approved.
+- Whether credentials require an approved secrets manager.
+- Whether company, customer, personal, or production data may leave the controlled environment.
 
-> **Data safety rule:** Do not send production data, personal data, customer data, credentials, source-code secrets, or confidential business information to an external model unless the organization has explicitly approved the provider, data classification, retention settings, region, contract, and use case.
+> Never send passwords, API keys, production data, personal data, confidential code, or customer information to an external model unless the provider and use case are formally approved.
 
 ---
 
-## 5. Windows Preflight Checks
+## 6. Prepare Windows and PowerShell
 
-### 5.1 Open PowerShell
+### 6.1 Open PowerShell
 
-1. Open the Start menu.
-2. Search for **PowerShell**.
-3. Open it normally first.
-4. Use **Run as administrator** only when a trusted installation or documented configuration change requires elevated permission.
+Open the Start menu, search for **PowerShell**, and launch it normally.
 
-Do not use administrator mode as a general workaround without understanding the command.
+Use **Run as administrator** only when a trusted installation or documented system change requires elevated permission. Do not use elevation as the default solution to unknown errors.
 
-### 5.2 Check the Current Directory
+### 6.2 Learn the Basic Commands
 
 ```powershell
-pwd
+pwd               # Show the current directory
+ls                # List files and directories
+cd <directory>    # Enter a directory
+cd ..             # Move to the parent directory
+mkdir <name>      # Create a directory
+Clear-Host        # Clear the terminal
 ```
 
-A typical home directory resembles:
+Always run `pwd` before commands that create, modify, or delete files.
 
-```text
-C:\Users\<your-user-name>
-```
-
-### 5.3 Check Git
+### 6.3 Check Git
 
 ```powershell
 git --version
 ```
 
-Expected result:
+Expected pattern:
 
 ```text
 git version <installed-version>
 ```
 
-Using `git --version` is clearer than entering only `git` because it produces a concise validation result.
-
 If Git is not recognized:
 
-1. Install Git for Windows from its official distribution channel or an organization-approved software center.
-2. Accept the recommended settings unless the project documentation requires different options.
-3. Close and reopen PowerShell.
-4. If necessary, restart Windows.
-5. Run `git --version` again.
+1. Install Git for Windows from an official or organization-approved source.
+2. Close and reopen PowerShell.
+3. Restart Windows if required.
+4. Run `git --version` again.
 
-### 5.4 Check for a VPN or Proxy Issue
+### 6.4 Consider VPN, Proxy, and Long Paths
 
-If cloning or installing packages fails:
+If downloads or cloning fail, check the approved VPN and proxy configuration. Do not disable certificates or corporate security controls to bypass an error.
 
-- Verify whether a VPN is required or is blocking access.
-- Check the organization’s proxy instructions.
-- Do not disable corporate security controls without authorization.
-- Test whether the repository website can be opened in the browser.
-- Record the full error message before changing configuration.
+Windows tools may also fail when file paths are too long. Prefer a short development path such as:
 
-### 5.5 Check Windows Long-Path Support
+```text
+C:\projects\project-name
+```
 
-Some dependency trees can exceed the traditional Windows path-length limit. Symptoms can include checkout, extraction, installation, or file-not-found errors involving very long paths.
-
-Mitigations:
-
-- Keep the project path short, for example `C:\projects\project-name`.
-- Enable long paths only through approved Windows policy or documented administrator steps.
-- Avoid deeply nested personal directories for development projects.
-- If permitted, configure Git long-path handling in an elevated PowerShell session:
+If approved, Git long-path support can be enabled from an elevated PowerShell session:
 
 ```powershell
 git config --system core.longpaths true
-```
-
-Verify it with:
-
-```powershell
 git config --system --get core.longpaths
 ```
 
-Expected output:
+Expected validation output:
 
 ```text
 true
 ```
 
-This Git setting can help with Git operations, but Windows policy and individual tools may still have their own path limitations.
+This helps Git, but Windows policy and other tools may still have separate path limits.
 
 ---
 
-## 6. Create a Projects Directory
+## 7. Create a Projects Directory
 
-A dedicated directory keeps repositories organized and helps avoid long paths.
-
-From your home directory:
-
-```powershell
-mkdir projects
-cd projects
-pwd
-ls
-```
-
-If the directory already exists, `mkdir` may report that it exists. In that case, simply run:
-
-```powershell
-cd projects
-```
-
-A short root-level path can also be used if permitted:
+Create one organized location for development work:
 
 ```powershell
 mkdir C:\projects
 cd C:\projects
+pwd
+ls
 ```
+
+If creating a root-level directory is not permitted, use a folder inside your Windows home directory:
+
+```powershell
+mkdir projects
+cd projects
+```
+
+A shorter path reduces path-length problems.
 
 ---
 
-## 7. Clone the Project Repository
+## 8. Clone and Validate the Repository
 
-### 7.1 Obtain the Clone URL
+### 8.1 Copy the Clone URL
 
-On the repository page:
+From the repository page:
 
-1. Open the repository’s clone or code menu.
-2. Select **HTTPS** unless your environment is already configured for SSH.
+1. Open the clone or code menu.
+2. Select HTTPS unless SSH is already configured.
 3. Copy the repository URL.
 
-An HTTPS clone URL generally resembles:
+It normally resembles:
 
 ```text
 https://<host>/<organization>/<repository>.git
 ```
 
-### 7.2 Run the Clone Command
+### 8.2 Clone the Repository
 
 From the projects directory:
 
 ```powershell
 git clone <repository-url>
-```
-
-Example using placeholders only:
-
-```powershell
-git clone https://<host>/<organization>/<repository>.git
-```
-
-### 7.3 Enter the Repository
-
-```powershell
 cd <repository-directory>
 ls
 ```
 
-### 7.4 Validate the Repository
+### 8.3 Validate the Clone
 
 ```powershell
 git status
@@ -401,75 +277,44 @@ git branch --show-current
 
 Confirm that:
 
-- `git status` identifies a valid working tree.
-- `git remote -v` displays the expected remote destination.
-- The current branch is the intended starting branch.
-- Expected top-level files such as `README.md` or `pyproject.toml` are visible.
+- Git recognizes the working tree.
+- The remote URL is correct.
+- The intended starting branch is selected.
+- Files such as `README.md` or `pyproject.toml` are visible.
 
-### 7.5 Common Clone Problems
+### Common Clone Errors
 
-#### `git` is not recognized
-
-Git is missing or not available on `PATH`. Install it, then open a new terminal.
-
-#### Authentication failed
-
-The repository may be private, the credentials may be incorrect, or the account may not have access. Follow the hosting platform’s approved authentication process.
-
-#### Repository not found
-
-Check:
-
-- URL spelling.
-- Account access.
-- Organization access requirements.
-- Whether single sign-on authorization is required.
-
-#### SSL, proxy, or connection error
-
-Check the organization’s network, certificate, VPN, and proxy guidance. Do not bypass certificate validation merely to make the error disappear.
-
-#### Destination path already exists
-
-A directory with the repository name already exists. Inspect it before deleting or replacing anything:
-
-```powershell
-cd <existing-directory>
-git status
-```
-
-If it is already the correct clone, use it instead of cloning again.
+- **Git not recognized:** Install Git and reopen the terminal.
+- **Authentication failed:** Check account access and the approved sign-in method.
+- **Repository not found:** Verify the URL, permissions, and organization access.
+- **SSL, proxy, or connection error:** Follow approved network and certificate guidance.
+- **Destination already exists:** Enter the existing directory and run `git status` before deleting or cloning again.
 
 ---
 
-## 8. Install and Configure an IDE
+## 9. Install and Configure an IDE
 
-Any suitable IDE may be used. An AI-assisted editor, a mainstream code editor, or a full Python IDE can all work, provided the project’s tools and notebook requirements are supported.
+Use any suitable IDE that supports the project’s languages, Git, and notebooks.
 
-### 8.1 Installation
+### Installation
 
-1. Download the IDE from its official website or company software center.
-2. Run the installer.
-3. Review each option rather than accepting unknown additions automatically.
-4. Create an account only if the selected product requires one.
+1. Download it from an official website or company software center.
+2. Review the installer options.
+3. Install only trusted extensions.
+4. Create an account only if the product requires one.
 5. Launch the IDE.
 
-Subscription-based AI features are optional unless the course or project explicitly relies on them. Basic code editing should not require paid autocomplete features.
+Paid AI autocomplete is normally optional. A standard editor is enough for basic development.
 
-### 8.2 Open the Correct Project Folder
+### Open the Correct Folder
 
-1. Select **Open Folder**, **Open Project**, or the equivalent command.
-2. Navigate to the cloned repository.
-3. Select the repository’s top-level directory.
-4. Confirm that the IDE file explorer displays the expected top-level files.
-
-Correct:
+Select **Open Folder** or **Open Project**, then choose:
 
 ```text
 C:\projects\<repository-directory>
 ```
 
-Usually incorrect:
+Avoid opening only:
 
 ```text
 C:\projects
@@ -477,76 +322,54 @@ C:\projects\<repository-directory>\src
 C:\projects\<repository-directory>\notebooks
 ```
 
-Opening the wrong directory can prevent the IDE from finding `.env`, `pyproject.toml`, `uv.lock`, notebook kernels, import paths, and Git metadata.
+Opening the wrong folder can prevent the IDE from finding Git metadata, `.env`, `pyproject.toml`, `uv.lock`, imports, or notebook kernels.
 
-### 8.3 Trust the Workspace Carefully
+Review the repository before marking the workspace as trusted because trusted workspaces may execute tasks or scripts.
 
-Some IDEs ask whether you trust the repository. Review the source before granting trust because trusted workspaces may run tasks, extensions, notebooks, or scripts.
+Recommended capabilities include:
 
-### 8.4 Recommended IDE Capabilities
-
-Depending on the project, enable or install trusted support for:
-
-- Python editing.
-- Jupyter notebooks.
+- Python and notebook support.
 - Git integration.
-- TypeScript and JavaScript.
-- Formatting and linting.
-- Testing.
-- Environment-variable files.
-
-Use extensions from trusted publishers and keep the extension count minimal.
+- TypeScript and JavaScript support when needed.
+- Formatting, linting, and testing.
+- Environment-file support.
 
 ---
 
-## 9. Install `uv`
+## 10. Install `uv`
 
-> Installation commands can change over time. Use the current official `uv` installation documentation or an organization-approved package source. The commands below show the typical workflow, but project documentation takes priority.
+Installation commands may change, so compare them with the current official documentation or an approved internal source.
 
-### 9.1 Check Whether `uv` Is Already Installed
+### Check Existing Installation
 
 ```powershell
 uv --version
 ```
 
-If a version is displayed, continue to project synchronization.
-
-### 9.2 Install on Windows
-
-A commonly used PowerShell installation pattern is:
+### Typical Windows Installation
 
 ```powershell
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-Security considerations:
+This command downloads and executes a remote script. Verify its domain and current official instructions before running it. In managed environments, use the approved software source instead.
 
-- Confirm that the domain and command match the current official documentation.
-- In a managed workstation, prefer the approved package manager or software center.
-- Understand that this command downloads and executes an installation script.
-- Do not run a remotely supplied script from an unverified source.
-
-After installation, close and reopen PowerShell, then verify:
+After installation, reopen PowerShell and validate:
 
 ```powershell
 uv --version
-```
-
-### 9.3 Verify the Executable Location
-
-```powershell
 Get-Command uv
 ```
 
-If `uv` was installed but is not recognized, restart the terminal and check whether its installation directory was added to `PATH`.
+If it is not recognized, reopen the terminal or restart Windows so that `PATH` changes are loaded.
 
 ---
 
-## 10. Create or Synchronize the Python Environment
+## 11. Prepare the Python Environment
 
-Run environment commands from the project root.
+Run these commands from the project root.
 
-### 10.1 Inspect the Project Files
+### 11.1 Inspect the Dependency Files
 
 Look for:
 
@@ -557,173 +380,103 @@ uv.lock
 requirements.txt
 ```
 
-The repository may use one or more of these files. Follow the repository’s documented workflow rather than creating competing dependency definitions.
+Follow the repository’s chosen dependency method. Do not create competing environment definitions unnecessarily.
 
-### 10.2 Synchronize a `uv` Project
+### 11.2 Synchronize the Project
 
-If `pyproject.toml` and optionally `uv.lock` are present:
+For a `uv` project:
 
 ```powershell
 uv sync
 ```
 
-This normally:
+This commonly creates `.venv`, selects the required Python version, and installs dependencies using the lock file when available.
 
-- Resolves or reads the project dependencies.
-- Creates a local virtual environment, commonly `.venv`.
-- Installs the required packages.
-- Uses locked versions when a lock file is available.
-
-For a project with development dependencies, its configuration may require an additional option or dependency group. Follow its `README.md` and `pyproject.toml` instructions.
-
-### 10.3 Install the Required Python Version
-
-If the repository specifies a Python version:
+If the project specifies a Python version:
 
 ```powershell
 uv python install <python-version>
 ```
 
-For example, if the project explicitly requires Python 3.12:
+Do not guess the version. Read `.python-version`, `pyproject.toml`, or the setup guide.
 
-```powershell
-uv python install 3.12
-```
-
-Do not assume a version. Read `.python-version`, `pyproject.toml`, or the setup documentation.
-
-### 10.4 Run Commands Through `uv`
-
-Running through `uv` avoids many activation and interpreter-selection problems:
+### 11.3 Run Through `uv`
 
 ```powershell
 uv run python --version
+uv run python -c "import sys; print(sys.executable)"
 uv run python -c "print('Environment is ready')"
 ```
 
-If notebooks are supported by the project, a typical launch command may be:
+For a project that includes Jupyter:
 
 ```powershell
 uv run jupyter lab
 ```
 
-Only use commands for packages that are declared by the project.
+Only run packages declared by the project.
 
-### 10.5 Optional Manual Activation
-
-If a `.venv` directory exists, PowerShell activation commonly uses:
+### Optional Manual Activation
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
-```
-
-The prompt may then display the environment name. Verify:
-
-```powershell
 python --version
 python -c "import sys; print(sys.executable)"
 ```
 
-To leave the environment:
+Leave the environment with:
 
 ```powershell
 deactivate
 ```
 
-Using `uv run` is often simpler and does not require manual activation.
+Using `uv run` is often simpler than manual activation.
 
-### 10.6 Do Not Mix Package Managers Casually
-
-Avoid mixing `uv`, system `pip`, Conda, and multiple virtual environments in the same project without a documented reason. Mixing tools can result in:
-
-- Packages installed into the wrong interpreter.
-- Different package versions in terminal and notebook sessions.
-- Non-reproducible environments.
-- Lock-file inconsistencies.
+> Avoid casually mixing `uv`, global `pip`, Conda, and multiple virtual environments. Packages may otherwise be installed into the wrong interpreter or become impossible to reproduce.
 
 ---
 
-## 11. Configure Model Access
+## 12. Select a Model Access Method
 
-An LLM application needs access to a model. Typical options include:
+### Paid Hosted API
 
-### Option A: Paid Hosted API
+- Usually provides strong models and simple access.
+- Requires billing, usage limits, approved data handling, and network access.
 
-Advantages:
+### Free-Tier Hosted API
 
-- Strong model capability.
-- Simple API access.
-- Minimal local hardware requirements.
+- Useful for learning without immediate payment.
+- May have lower limits, restricted models, or changing availability.
 
-Considerations:
+### Local Model
 
-- Billing and usage limits.
-- Network access.
-- Data-governance approval.
-- Rate limits and regional availability.
+- Keeps inference under greater local control and avoids per-request API costs.
+- Requires adequate CPU, memory, storage, and possibly a GPU.
+- Still requires license, security, and organizational review.
 
-### Option B: Free-Tier Hosted API
-
-Advantages:
-
-- Suitable for initial learning.
-- No immediate payment may be required.
-
-Considerations:
-
-- Lower limits.
-- Availability may change.
-- Some models or capabilities may be restricted.
-- An account and API key may still be required.
-
-### Option C: Local Model
-
-Advantages:
-
-- Greater local control.
-- Can work without sending prompts to an external hosted model after setup.
-- No per-request API billing.
-
-Considerations:
-
-- Requires sufficient CPU, memory, storage, and possibly GPU capacity.
-- Model quality and speed depend on hardware and model size.
-- Licensing and organizational approval must still be reviewed.
-
-Use the option approved for the project and data classification.
+Choose the option approved for the project and the data being processed.
 
 ---
 
-## 12. Create and Protect the `.env` File
+## 13. Create and Protect `.env`
 
-### 12.1 Check for an Example File
+### 13.1 Use an Existing Template
 
-Look for a template such as:
-
-```text
-.env.example
-example.env
-```
-
-If `.env.example` exists, copy it:
+If `.env.example` exists:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Templates must contain placeholder values only, never real secrets.
-
-### 12.2 Create the File
-
-From the project root:
+Otherwise create the file:
 
 ```powershell
 New-Item -ItemType File .env
 ```
 
-If it already exists, inspect it instead of overwriting it.
+Do not overwrite an existing `.env` without inspecting it.
 
-### 12.3 Add the Required Variable
+### 13.2 Add the Required Variable
 
 Use the exact variable name expected by the application:
 
@@ -731,36 +484,23 @@ Use the exact variable name expected by the application:
 MODEL_API_KEY=replace_with_your_real_key
 ```
 
-A real project may expect provider-specific names. Read the code, `.env.example`, or setup documentation and use the exact spelling.
+Rules:
 
-Important rules:
+- Use the exact key name and spelling.
+- Keep one variable per line.
+- Avoid spaces around `=` unless explicitly supported.
+- Do not add Markdown formatting.
+- Save it as plain text.
 
-- Do not insert spaces around `=` unless the application explicitly supports them.
-- Do not rename the variable casually.
-- Do not add Markdown formatting to `.env`.
-- Avoid unnecessary quotation marks.
-- One variable should normally be on each line.
-- Save the file as plain text.
-
-### 12.4 Avoid the `.env.txt` Problem
-
-Windows may hide known file extensions, causing a text editor to create `.env.txt`.
-
-Check from PowerShell:
+Check that Windows did not create `.env.txt`:
 
 ```powershell
 Get-ChildItem -Force .env*
 ```
 
-The expected filename is exactly:
+### 13.3 Ignore Secrets in Git
 
-```text
-.env
-```
-
-### 12.5 Add `.env` to `.gitignore`
-
-The repository’s `.gitignore` should include:
+Add these patterns to `.gitignore`:
 
 ```gitignore
 .env
@@ -768,50 +508,32 @@ The repository’s `.gitignore` should include:
 !.env.example
 ```
 
-This ignores environment-specific secret files while allowing a safe example template.
-
-Check whether Git is tracking the file:
+Validate:
 
 ```powershell
 git status --short
-```
-
-The real `.env` file should not be listed as a file to commit.
-
-A useful ignore check is:
-
-```powershell
 git check-ignore -v .env
 ```
 
-### 12.6 If a Secret Is Accidentally Committed
+The real `.env` must not be staged or committed. `.env.example` may be committed only with placeholder values.
 
-Treat it as compromised:
+### 13.4 If a Secret Is Exposed
 
-1. Revoke or rotate the key immediately.
-2. Remove the secret from the repository.
-3. Review logs and usage for unexpected access.
-4. Follow the organization’s incident-response process.
-5. If required, clean the secret from Git history using an approved procedure.
+1. Revoke or rotate it immediately.
+2. Remove it from the repository.
+3. Review usage logs.
+4. Follow the organization’s incident process.
+5. Clean Git history if required by the approved procedure.
 
-Deleting the visible line in a later commit is not enough because the secret may remain in Git history.
+Deleting a secret in a later commit does not remove it from older Git history.
 
-### 12.7 Production Secret Management
-
-A `.env` file is convenient for local learning. For production, use an approved secret-management platform with:
-
-- Access control.
-- Audit logs.
-- Rotation.
-- Environment separation.
-- Managed identities where possible.
-- Least-privilege permissions.
+For production, use an approved secrets manager with access control, audit logging, rotation, environment separation, and least-privilege access.
 
 ---
 
-## 13. Load and Validate Environment Variables
+## 14. Load and Validate Configuration
 
-The project may use a library to load `.env`. A minimal Python validation pattern is:
+A minimal Python check may look like this:
 
 ```python
 import os
@@ -826,17 +548,15 @@ if not api_key:
 print("API key is configured")
 ```
 
-Do not print the real key. If you must identify which credential was loaded during local debugging, display only a safe, heavily masked fragment, and never include it in shared logs.
-
-The code above assumes that the project declares the environment-loading package as a dependency. Do not install undeclared packages manually unless you are intentionally updating the project configuration.
+This assumes the environment-loading package is declared by the project. Never print the real key or include it in logs, screenshots, notebooks, issues, or chat messages.
 
 ---
 
-## 14. First-Run Validation Checklist
+## 15. Validate the Complete Setup
 
-Perform these checks from the project root.
+Run the following from the project root.
 
-### 14.1 Git
+### Git
 
 ```powershell
 git --version
@@ -844,70 +564,58 @@ git status
 git remote -v
 ```
 
-### 14.2 `uv` and Python
+### Python and `uv`
 
 ```powershell
 uv --version
+uv sync
 uv run python --version
 uv run python -c "import sys; print(sys.executable)"
 ```
 
-Confirm that the interpreter points to the project environment rather than an unrelated global installation.
+The interpreter should belong to the project environment.
 
-### 14.3 Dependencies
-
-```powershell
-uv sync
-uv run python -c "print('Dependencies are available')"
-```
-
-If the project provides tests, run its documented test command. A common pattern is:
-
-```powershell
-uv run pytest
-```
-
-Do not assume `pytest` exists unless it is declared by the project.
-
-### 14.4 Environment File
+### Credentials
 
 ```powershell
 Get-ChildItem -Force .env*
 git check-ignore -v .env
 ```
 
-Confirm that:
+Confirm that `.env` exists, contains the expected variable, and is ignored by Git.
 
-- `.env` exists.
-- The expected variable is present.
-- `.env` is ignored by Git.
-- No secret appears in the terminal output or Git status.
-
-### 14.5 IDE
+### IDE and Notebook
 
 Confirm that:
 
 - The repository root is open.
 - Git integration detects the repository.
-- The selected Python interpreter belongs to `.venv` or the `uv` environment.
-- Notebook kernels use the same environment.
-- No unexpected workspace task runs automatically.
+- The selected interpreter belongs to `.venv`.
+- The notebook kernel uses the same interpreter.
+- No unexpected workspace task is running.
 
-### 14.6 Model Connectivity
+Inside a notebook, verify with:
 
-Run the project’s smallest documented model request using a harmless test prompt. Verify:
+```python
+import sys
+print(sys.executable)
+```
 
-- Authentication succeeds.
-- The selected model identifier is valid.
-- A response is returned.
-- Usage remains within the configured budget.
-- Logs do not expose the API key or sensitive prompt content.
+### Tests and Model Connectivity
+
+Run the project’s documented test command. If `pytest` is declared, it may be:
+
+```powershell
+uv run pytest
+```
+
+Then run the smallest documented model request using harmless sample data. Confirm successful authentication, a valid model name, a returned response, expected cost, and secret-free logs.
 
 ---
 
-## 15. Suggested First LLM Application Flow
+## 16. First LLM Application Flow
 
-A small LLM application usually follows this sequence:
+A basic application should follow this sequence:
 
 ```text
 User input
@@ -916,48 +624,48 @@ Input validation and safety checks
    ↓
 Prompt construction
    ↓
-Model API request
+Model request
    ↓
 Response validation
    ↓
-Formatted result
+Formatted output
    ↓
-Logging of safe operational metadata
+Safe operational logging
 ```
 
-A practical first exercise can be a text summarizer or structured information extractor using non-sensitive sample data.
+A summarizer, classifier, or structured information extractor using non-sensitive sample text is a suitable first project.
 
-### Recommended development stages
+Suggested steps:
 
-1. Load configuration from environment variables.
+1. Load configuration.
 2. Create the model client.
-3. Define a narrow task.
-4. Use a small non-sensitive sample input.
+3. Define one narrow task.
+4. Use safe sample input.
 5. Send the request.
-6. Check for request and authentication errors.
+6. Handle authentication, timeout, and rate-limit errors.
 7. Validate the response format.
-8. Record latency and token usage if available.
-9. Add tests for deterministic application behavior.
-10. Commit source code and documentation, but not credentials or generated private data.
+8. Record latency and usage when available.
+9. Add tests for deterministic application logic.
+10. Commit source and documentation, but never secrets or private data.
 
 ---
 
-## 16. Responsible Use of AI Coding Assistants
+## 17. Safe Use of AI Coding Assistants
 
-AI coding tools are useful for explaining errors, suggesting commands, generating starter code, and identifying likely causes. Their output can still be incorrect, insecure, obsolete, or incompatible with the project.
+AI assistants can explain errors and suggest commands, but their output may be outdated, insecure, or incorrect.
 
-Before following an AI suggestion:
+Before applying a suggestion:
 
-1. Read the full command.
-2. Identify files, permissions, and services it will affect.
-3. Check the official project documentation.
+1. Read the complete command.
+2. Identify the files, permissions, and services it affects.
+3. Compare it with official documentation.
 4. Verify package and command names.
-5. Avoid disabling SSL, antivirus, access controls, or security checks.
-6. Do not paste credentials, proprietary code, or production data into unapproved tools.
-7. Run destructive operations only after creating a backup or clean Git checkpoint.
-8. Test the smallest safe change first.
+5. Never disable SSL, antivirus, or access controls merely to remove an error.
+6. Never paste secrets, production data, or proprietary code into an unapproved tool.
+7. Create a backup or clean Git checkpoint before destructive changes.
+8. Test one small change at a time.
 
-Be especially cautious with commands containing:
+Review commands containing the following with extra care:
 
 ```text
 Remove-Item -Recurse -Force
@@ -969,41 +677,28 @@ curl ... | shell
 administrator or sudo elevation
 ```
 
-These commands are not automatically malicious, but they require additional review because they can execute remote code, bypass a local policy for a process, or delete large amounts of data.
+They may be legitimate, but can execute remote code, bypass a local restriction for a process, or delete data.
 
 ---
 
-## 17. Troubleshooting Workflow
+## 18. Troubleshooting Method
 
-Use a systematic process rather than changing many things at once.
+### 1. Capture the Error
 
-### Step 1: Capture the Exact Error
+Record the exact command, complete error, `pwd` result, tool versions, permission level, network conditions, and last successful step. Remove secrets before sharing logs.
 
-Record:
+### 2. Read the Repository Documentation
 
-- The full command.
-- The complete error message.
-- The current directory from `pwd`.
-- Tool versions.
-- Whether the terminal is normal or elevated.
-- Whether a VPN or proxy is active.
-- The last setup step that succeeded.
+Check:
 
-Remove secrets before sharing logs.
+1. `README.md`
+2. Setup and troubleshooting guides
+3. `pyproject.toml`
+4. `.python-version`
+5. `.env.example`
+6. Known issues
 
-### Step 2: Check the Project Documentation
-
-Read, in order:
-
-1. `README.md`.
-2. Setup or installation guide.
-3. Troubleshooting notebook or guide.
-4. `pyproject.toml`.
-5. `.python-version`.
-6. `.env.example`.
-7. Known issues or issue tracker.
-
-### Step 3: Verify the Fundamentals
+### 3. Verify the Basics
 
 ```powershell
 pwd
@@ -1014,135 +709,84 @@ git status
 Get-ChildItem -Force
 ```
 
-### Step 4: Isolate the Layer
+### 4. Isolate the Failing Layer
 
-Determine whether the failure belongs to:
+Determine whether the problem comes from:
 
-- Operating-system permissions.
-- Git or repository access.
-- IDE configuration.
-- Python version selection.
-- Dependency installation.
+- Permissions or Windows paths.
+- Git or repository authentication.
+- IDE or notebook configuration.
+- Python version or dependencies.
 - `.env` loading.
-- API authentication.
-- Model availability or rate limits.
-- Proxy, VPN, firewall, or certificates.
+- API authentication or model access.
+- VPN, proxy, firewall, or certificates.
 - Application code.
 
-### Step 5: Apply One Change
+### 5. Change One Thing
 
-Make one change, repeat the failing command, and record the result. Multiple simultaneous changes make the real cause difficult to identify.
+Apply one safe change, rerun the failing command, and record the result. Changing several settings together hides the real cause.
 
 ---
 
-## 18. Common Problems and Fixes
+## 19. Common Problems
 
-### Problem: `uv` or Git Works in One Terminal but Not Another
+### Tool Works in One Terminal but Not Another
 
-Likely cause: the newer terminal has refreshed `PATH`, while the older one has not.
+Close and reopen terminals and the IDE, then run:
 
-Actions:
+```powershell
+Get-Command git
+Get-Command uv
+```
 
-- Close all terminal windows.
-- Reopen the IDE and PowerShell.
-- Run `Get-Command git` or `Get-Command uv`.
-- Restart Windows if installation changed system-level environment settings.
+Restart Windows if `PATH` has not refreshed.
 
-### Problem: The IDE Cannot Find Imports
+### IDE Cannot Find Python Imports
 
-Likely cause: the IDE selected the wrong Python interpreter.
-
-Actions:
-
-- Select the interpreter inside `.venv`.
-- Run `uv sync`.
-- Compare the IDE interpreter with:
+Select the interpreter inside `.venv`, run `uv sync`, and compare it with:
 
 ```powershell
 uv run python -c "import sys; print(sys.executable)"
 ```
 
-### Problem: Notebook Kernel Differs from the Terminal Environment
+### Notebook Uses the Wrong Environment
 
-Actions:
+Select the `.venv` kernel, restart it, and inspect `sys.executable` inside the notebook.
 
-- Select the project’s `.venv` kernel.
-- Restart the notebook kernel.
-- Verify the executable from a notebook cell:
+### API Key Is Not Found
 
-```python
-import sys
-print(sys.executable)
-```
-
-### Problem: API Key Not Found
-
-Check:
+Check that:
 
 - The filename is exactly `.env`.
-- The file is in the project root or expected directory.
-- The variable name exactly matches the application.
-- The file was saved.
-- The environment loader is called before the variable is read.
-- The notebook kernel or application was restarted after configuration changed.
+- It is in the expected project directory.
+- The variable name matches the code exactly.
+- The file has been saved.
+- `.env` is loaded before the variable is read.
+- The application or notebook kernel was restarted.
 
-### Problem: Authentication Fails Even Though a Key Exists
+### Authentication Still Fails
 
-Possible causes:
+The key may be invalid, expired, revoked, copied incorrectly, associated with the wrong account, or missing model access, quota, or billing. The endpoint or provider configuration may also be wrong.
 
-- The key was copied incorrectly.
-- The key is expired, revoked, or associated with the wrong account or project.
-- The account lacks billing, quota, or model access.
-- The application is using the wrong provider endpoint or variable.
-- A proxy is modifying or blocking the request.
+### Dependencies Fail to Install
 
-Rotate the credential if it may have been exposed.
+Check the Python version, lock file, earliest meaningful error, package source, proxy, and certificates. Do not delete the lock file unless the project intentionally needs dependency re-resolution.
 
-### Problem: Dependency Resolution Fails
+### Path Is Too Long
 
-Actions:
+Move the project to a shorter location such as `C:\projects`, verify long-path settings, and avoid nested duplicate clones.
 
-- Verify the required Python version.
-- Confirm that the lock file matches the intended platform.
-- Read the earliest meaningful error, not only the last line.
-- Check proxy, certificate, and package-index configuration.
-- Avoid deleting the lock file unless the project maintainer intends to re-resolve dependencies.
+### Permission Is Denied
 
-### Problem: Windows Path Is Too Long
+Check file ownership and running processes. Close applications using the environment. Use administrator access only when the documented operation requires it.
 
-Actions:
+### API Cost Is Too High
 
-- Move the repository to a shorter path such as `C:\projects`.
-- Verify approved long-path configuration.
-- Avoid nested duplicate clones.
-- Re-run the failed installation after correcting the path.
-
-### Problem: Permission Denied
-
-Actions:
-
-- Check file ownership and whether another process has locked the file.
-- Close running notebook servers or applications using the environment.
-- Use administrator mode only if the documented operation genuinely requires it.
-- In a managed environment, request appropriate access rather than bypassing policy.
-
-### Problem: Paid API Usage Is Unexpectedly High
-
-Actions:
-
-- Set account-level budgets and usage alerts.
-- Use a less expensive approved model during development.
-- Limit output tokens.
-- Avoid unbounded loops and automatic retries.
-- Cache safe, reusable results where appropriate.
-- Log request counts and token usage without storing sensitive prompt content.
-- Revoke keys that may be exposed.
+Set budgets and alerts, limit output tokens, use an approved lower-cost model, avoid unbounded retries or loops, monitor request counts and token use, and revoke any exposed key.
 
 ---
 
-## 19. Repository Hygiene
-
-A learning repository may use a structure such as:
+## 20. Suggested Repository Structure
 
 ```text
 llm-learning-project/
@@ -1157,7 +801,7 @@ llm-learning-project/
 │   ├── troubleshooting.md
 │   └── learning-log.md
 ├── notebooks/
-│   └── first_llm_experiment.ipynb
+│   └── first-llm-experiment.ipynb
 ├── src/
 │   └── app/
 │       ├── __init__.py
@@ -1167,142 +811,596 @@ llm-learning-project/
     └── test_config.py
 ```
 
-Recommended commit sequence:
+Before committing:
 
 ```powershell
 git status
+git diff --staged
+```
+
+Stage only reviewed files. Be especially careful with `.env`, notebooks, outputs, datasets, and logs.
+
+Example documentation commit:
+
+```powershell
 git add README.md docs .gitignore .env.example
 git commit -m "Document LLM development environment setup"
 ```
 
-Review staged files before committing:
-
-```powershell
-git diff --staged
-```
-
-Never use `git add .` without reviewing what it will stage, especially when working with notebooks, outputs, datasets, logs, and environment files.
-
 ---
 
-## 20. Learning Process Template
-
-Use the following structure after each lab or setup session.
+## 21. Learning Log Template
 
 ```markdown
 ## Session: YYYY-MM-DD
 
 ### Objective
-Describe what I intended to install, understand, or build.
+What I intended to install, understand, or build.
 
 ### Concepts Learned
 - Concept 1
 - Concept 2
 
 ### Commands Used
-List only reusable, non-secret commands.
+Reusable commands without credentials.
 
-### Files Created or Updated
+### Files Changed
 - `path/to/file`
 
-### Validation Performed
-Describe how I proved the setup or feature worked.
+### Validation
+How I confirmed that the setup or feature worked.
 
-### Problems Encountered
-Include the sanitized error and the step where it occurred.
-
-### Root Cause
-Explain the actual cause after investigation.
+### Problem and Root Cause
+The sanitized error and its actual cause.
 
 ### Resolution
-Document the smallest change that fixed the issue.
+The smallest change that fixed the problem.
 
 ### Security and Cost Checks
-- No secret committed.
-- No sensitive data sent to an unapproved service.
-- Usage limit verified.
+- No secret was committed.
+- No sensitive data was sent to an unapproved service.
+- Usage limits were checked.
 
 ### Next Step
-State the next feature, lab, or concept to complete.
+The next feature, lab, or concept.
 ```
 
 ---
 
-## 21. Setup Completion Checklist
+## 22. Completion Checklist
 
-### Computer and command line
+### System and Repository
 
-- [ ] I can open PowerShell.
-- [ ] I understand `pwd`, `cd`, `mkdir`, and `ls`.
-- [ ] I am working from a short, organized project path.
-- [ ] I checked relevant VPN, proxy, and long-path requirements.
+- [ ] PowerShell commands work.
+- [ ] Git is installed.
+- [ ] The repository is cloned to a short path.
+- [ ] `git status` works from the project root.
+- [ ] The remote and starting branch are correct.
 
-### Git and repository
+### IDE and Python
 
-- [ ] `git --version` works.
-- [ ] The repository is cloned successfully.
-- [ ] `git status` works from the repository root.
-- [ ] The expected remote and branch are configured.
-
-### IDE
-
-- [ ] The IDE is installed.
-- [ ] The repository root is open.
-- [ ] Git integration detects the project.
-- [ ] The project Python interpreter or notebook kernel is selected.
-
-### Python environment
-
-- [ ] `uv --version` works.
+- [ ] The repository root is open in the IDE.
+- [ ] `uv` is installed.
 - [ ] The required Python version is available.
-- [ ] `uv sync` completes successfully.
-- [ ] `uv run python --version` shows the expected version.
+- [ ] `uv sync` completes.
+- [ ] The IDE and notebooks use the `.venv` interpreter.
 
-### Credentials and security
+### Credentials and Security
 
-- [ ] The model-access option is approved.
-- [ ] `.env` is named correctly.
-- [ ] The exact required environment variable is configured.
+- [ ] The selected model service is approved.
+- [ ] The filename is exactly `.env`.
+- [ ] The variable name matches the application.
 - [ ] `.env` is ignored by Git.
-- [ ] No credential appears in code, notebooks, logs, or screenshots.
-- [ ] An account budget or usage limit is configured where applicable.
+- [ ] No secret appears in code, logs, notebooks, or screenshots.
+- [ ] Budgets or usage limits are configured when applicable.
 
-### First run
+### First Run
 
-- [ ] The first notebook or application opens.
-- [ ] The smallest test request succeeds.
-- [ ] The model response is checked before being used.
+- [ ] Tests or setup checks pass.
+- [ ] A small harmless model request succeeds.
+- [ ] The response is validated before use.
 - [ ] Errors are handled without exposing secrets.
-- [ ] The learning log records the setup and any fixes.
+- [ ] The session is recorded in the learning log.
 
 ---
 
-## 22. Recommended Next Learning Steps
+## 23. Recommended Next Steps
 
-After setup, continue in this order:
-
-1. Learn the structure of an LLM request and response.
-2. Understand prompts, tokens, context windows, temperature, and output limits.
-3. Build a small text-processing application with non-sensitive data.
+1. Learn the structure of LLM requests and responses.
+2. Study prompts, tokens, context windows, temperature, and output limits.
+3. Build a small application using non-sensitive sample data.
 4. Add structured output and schema validation.
-5. Add error handling, timeouts, and bounded retries.
-6. Compare models using a fixed evaluation dataset and scoring criteria.
-7. Learn the intuition behind attention and Transformer architecture.
-8. Add automated tests and basic evaluation checks.
+5. Add timeouts, bounded retries, and clear error handling.
+6. Compare models using the same evaluation dataset and criteria.
+7. Learn attention and Transformer fundamentals.
+8. Add tests and evaluation checks.
 9. Add safe logging, cost monitoring, and secret management.
-10. Package the solution into a usable application or service.
+10. Package the solution as an application or service.
 11. Review privacy, security, licensing, and operational requirements before deployment.
 
 ---
 
-## 23. Key Takeaways
+## Final Takeaways
 
-- Most setup failures come from incorrect paths, missing tools, wrong interpreters, dependency conflicts, misspelled environment variables, or network restrictions.
-- The filename is `.env`, and the variable name must exactly match what the application expects.
-- The IDE should usually open the repository root.
-- `uv` helps produce an isolated and reproducible Python environment.
-- Git tracks source changes, while a Git hosting platform stores and supports collaboration around repositories.
-- API keys are secrets and must never be committed.
-- AI-generated commands and code must be reviewed, verified, and tested.
-- Start with non-sensitive sample data and a tightly scoped model request.
-- A successful API call is only the beginning. A production-ready solution also needs validation, security, testing, observability, cost controls, and governance.
+- Open the repository root in the IDE.
+- Use `uv` to keep Python and dependencies isolated and reproducible.
+- Name the credential file exactly `.env`.
+- Never commit or display API keys.
+- Use short Windows paths and check VPN or proxy requirements.
+- Verify AI-generated code and commands before running them.
+- Begin with safe sample data and a narrow task.
+- A successful model response is only the first step. Reliable solutions also need testing, validation, security, observability, cost controls, and governance.
+
+
+# Optional Model API Setup and Secure `.env` Configuration
+
+## 1. Purpose
+
+This guide explains the optional steps for connecting an LLM project to a hosted model API. It covers:
+
+- Choosing between paid, free-tier, and local models.
+- Understanding the difference between a chat product and an API.
+- Creating and funding an API account.
+- Generating an API key.
+- Saving the key securely in a project-root `.env` file.
+- Validating the configuration and resolving common errors.
+
+> **Important correction:** The file is named `.env`, not `EMV`, `.env.txt`, `env`, or `.env.`
+
+---
+
+## 2. Are These Steps Required?
+
+No. Hosted API setup and credential configuration are optional if the project supports another provider or a local model.
+
+Common choices include:
+
+### Paid hosted API
+
+- Provides access to capable hosted models.
+- Usually requires prepaid credit or usage-based billing.
+- Requires careful cost and credential management.
+
+### Free-tier hosted API
+
+- May provide free access with usage limits.
+- Model availability, quotas, and terms may change.
+- Still requires an account and often an API key.
+
+### Local model
+
+- Runs on your own computer through a supported local runtime.
+- Avoids per-request API charges.
+- Requires enough memory, storage, CPU, and possibly GPU capacity.
+
+Choose the option supported by the project and approved for the data being processed.
+
+> Never send production, customer, personal, confidential, or credential data to an external model unless the provider and use case are formally approved.
+
+---
+
+## 3. Chat Product vs Model API
+
+A hosted AI provider may offer two separate services:
+
+### Chat application
+
+A ready-to-use website or application where users interact directly with a model. A subscription normally pays for features inside that product.
+
+### Developer API
+
+A programming interface that allows your own code to send requests to models. API usage normally has separate credentials, billing, quotas, and terms.
+
+Paying for a chat subscription does not automatically provide API credit. Likewise, having API credit does not necessarily provide a paid chat subscription.
+
+---
+
+## 4. Create an API Platform Account
+
+If you choose a hosted API:
+
+1. Open the provider's official developer platform, not only its consumer chat application.
+2. Select **Sign up**.
+3. Register with an approved email address or supported identity provider.
+4. Complete any account, organization, project, regional, or verification screen presented.
+5. Sign in to the developer dashboard.
+
+Account creation may be free, while API requests require billing or available free-tier credit.
+
+---
+
+## 5. Configure Billing Safely
+
+Open the platform's **Settings** or **Billing** area.
+
+For prepaid billing:
+
+1. Add a valid payment method.
+2. Add only the minimum credit needed for learning.
+3. Keep automatic recharge disabled unless continuous production availability is intentionally required.
+4. Review the balance and usage dashboard regularly.
+5. Configure budgets, alerts, or project-level limits where available.
+
+The course transcript describes a minimum prepaid amount of **US$5** and credit validity of approximately one year. Pricing, minimum deposits, taxes, payment methods, and expiration rules can change, so verify the current values shown in the official billing page before paying.
+
+### If a payment is declined
+
+Possible causes include:
+
+- International or online payments are disabled on the card.
+- The bank blocks the transaction.
+- The payment details or billing address do not match.
+- The card type or region is unsupported.
+- Additional authentication is required.
+
+Recommended actions:
+
+1. Check the bank or card settings.
+2. Confirm international and online transactions are enabled.
+3. Review the payment details.
+4. Try another approved payment method if available.
+5. Contact the bank or platform support if the issue continues.
+
+Do not repeatedly submit a declined transaction without checking the cause.
+
+---
+
+## 6. Create an API Key
+
+From the developer dashboard:
+
+1. Open **Settings** or the API-key management page.
+2. Confirm that you are working in the intended organization and project.
+3. Select **Create new secret key**.
+4. Give the key a descriptive name, such as:
+
+```text
+local-learning-key
+```
+
+5. Select the correct project.
+6. Choose the minimum permissions needed by the application.
+7. Create the key.
+8. Copy it immediately and keep the creation screen open until it is stored safely.
+
+Some learning environments may instruct you to use a default project and broad permissions to avoid permission-related errors. For personal experiments, follow the project's documented requirements. For production, always prefer a dedicated project, least-privilege permissions, usage limits, and separate keys for each environment.
+
+### Important API-key rules
+
+An API key behaves like a password linked to an account and potentially to its billing balance.
+
+Never:
+
+- Type the key manually when copy and paste is available.
+- Modify any character in the key.
+- Paste it into source code.
+- Commit it to Git.
+- Store it in a notebook cell.
+- Include it in screenshots, logs, issues, documentation, or chat messages.
+- Reuse a personal learning key in production.
+
+The complete key may only be displayed once. If it is lost, create a replacement instead of trying to reconstruct it.
+
+> API-key prefixes and formats can change. Validate the key through the provider rather than relying only on how it begins.
+
+---
+
+## 7. Create the `.env` File
+
+The key should be stored in a local `.env` file rather than in application code.
+
+### Correct location
+
+Create `.env` in the **project root**, alongside top-level files such as:
+
+```text
+project-root/
+├── .env
+├── .gitignore
+├── README.md
+├── pyproject.toml
+├── src/
+└── notebooks/
+```
+
+Do not place it inside `src`, `notebooks`, or another subdirectory unless the application explicitly expects that location.
+
+### Create it in the IDE
+
+1. Open the project root in the IDE.
+2. Right-click the top-level file area.
+3. Select **New File**.
+4. Enter exactly:
+
+```text
+.env
+```
+
+### Create it with PowerShell
+
+From the project root:
+
+```powershell
+New-Item -ItemType File .env
+```
+
+If the file already exists, inspect it instead of overwriting it.
+
+### Verify the filename
+
+Windows may hide file extensions and accidentally create `.env.txt`.
+
+```powershell
+Get-ChildItem -Force .env*
+```
+
+The filename must be exactly `.env`.
+
+---
+
+## 8. Add the API Key
+
+For an OpenAI-compatible project expecting the conventional environment-variable name, add:
+
+```dotenv
+OPENAI_API_KEY=paste_your_secret_key_here
+```
+
+The variable name must match the application exactly. In this example it is:
+
+```text
+OPENAI_API_KEY
+```
+
+It is not:
+
+```text
+OPEN_API_KEY
+OPENAI_KEY
+OPEN_AI_API_KEY
+API_KEY
+```
+
+### Formatting rules
+
+- Use uppercase letters exactly as required.
+- Use underscores exactly as shown.
+- Place one variable on each line.
+- Do not add spaces around `=`.
+- Do not add Markdown backticks.
+- Do not add an unnecessary trailing space.
+- Save the file after pasting the key.
+
+Correct:
+
+```dotenv
+OPENAI_API_KEY=your_secret_value
+```
+
+Incorrect:
+
+```dotenv
+OPENAI_API_KEY = your_secret_value
+```
+
+After editing, press `Ctrl+S` on Windows or use **File > Save**. An unsaved editor tab means the application may still see an empty or missing file.
+
+---
+
+## 9. Protect `.env` from Git
+
+Ensure `.gitignore` contains:
+
+```gitignore
+.env
+.env.*
+!.env.example
+```
+
+This ignores real environment files while allowing a safe template named `.env.example`.
+
+Validate the result:
+
+```powershell
+git status --short
+git check-ignore -v .env
+```
+
+The real `.env` file must not be staged or committed.
+
+### Safe template
+
+A repository may include `.env.example` containing placeholders only:
+
+```dotenv
+OPENAI_API_KEY=replace_with_your_key
+```
+
+Never place a real credential in `.env.example` because that file is intended to be committed.
+
+### IDE secret protection
+
+Some AI-assisted editors disable AI features for secret files and display a warning or blocked icon beside `.env`. This is expected and desirable. It helps prevent the editor from sending secret-file contents to an AI service.
+
+Do not enable AI assistance for `.env` merely to remove the warning.
+
+---
+
+## 10. Validate the Configuration
+
+### Check the file and Git protection
+
+From the project root:
+
+```powershell
+Get-ChildItem -Force .env*
+git check-ignore -v .env
+git status --short
+```
+
+Confirm that:
+
+- `.env` exists in the project root.
+- The filename is correct.
+- The file has been saved.
+- Git ignores it.
+- No key appears in terminal output or staged changes.
+
+### Validate from Python
+
+If the project includes `python-dotenv`, a safe validation is:
+
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+if not os.getenv("OPENAI_API_KEY"):
+    raise RuntimeError("OPENAI_API_KEY is missing")
+
+print("API key is configured")
+```
+
+Do not print the actual key.
+
+Run it through the project environment, for example:
+
+```powershell
+uv run python <validation-script>.py
+```
+
+Then use the project's smallest documented model request with harmless sample input. Confirm successful authentication, model access, expected usage, and secret-free logs.
+
+---
+
+## 11. Common Problems
+
+### `.env` is not detected
+
+Check that:
+
+- The file is named exactly `.env`.
+- It is in the project root.
+- The file was saved.
+- The application was started from the expected directory.
+- The environment loader runs before the key is read.
+- The application or notebook kernel was restarted after the file changed.
+
+### The key is missing
+
+Possible causes:
+
+- `OPENAI_API_KEY` is misspelled.
+- The `=` sign is missing.
+- The value was not pasted.
+- The file is unsaved.
+- A different environment variable is expected by the project.
+
+### Authentication fails
+
+Possible causes:
+
+- The key was copied incorrectly.
+- The key was revoked or expired.
+- The wrong organization, project, or endpoint is configured.
+- The key lacks required permissions.
+- The account has no usable credit or quota.
+- A VPN, proxy, or firewall blocks the request.
+
+Create a new key if the original value cannot be trusted.
+
+### Billing or quota error
+
+Check:
+
+- Available credit.
+- Usage limits and project budgets.
+- Payment-method status.
+- Model access.
+- Rate limits.
+- Whether the request uses the intended account and project.
+
+### The key appears in Git
+
+Treat it as compromised:
+
+1. Revoke or rotate the key immediately.
+2. Remove it from tracked files.
+3. Add `.env` to `.gitignore`.
+4. Review provider usage logs.
+5. Follow the approved incident process.
+6. Clean Git history if required.
+
+Deleting the key in a later commit does not remove it from earlier Git history.
+
+---
+
+## 12. Cost-Control Practices
+
+For learning and experimentation:
+
+- Add only a small prepaid balance.
+- Keep automatic recharge disabled.
+- Configure budget alerts where available.
+- Use a lower-cost approved model for routine testing.
+- Limit the maximum output tokens.
+- Avoid unbounded loops and automatic retries.
+- Monitor usage after each lab.
+- Use different keys for learning, testing, and production.
+- Revoke unused keys.
+
+For production, use formal budgets, project isolation, least-privilege access, monitoring, rate limits, and an approved secrets manager.
+
+---
+
+## 13. Completion Checklist
+
+### Model access
+
+- [ ] I selected a paid, free-tier, or local model option.
+- [ ] The provider and data usage are approved.
+- [ ] I understand that chat subscriptions and API billing are separate.
+
+### Billing
+
+- [ ] A valid payment method or free-tier quota is available.
+- [ ] Automatic recharge is disabled for learning.
+- [ ] A small budget or usage alert is configured.
+
+### API key
+
+- [ ] The key belongs to the intended project.
+- [ ] Its permissions are appropriate.
+- [ ] It was copied without modification.
+- [ ] It has not been shared or placed in source code.
+
+### `.env`
+
+- [ ] The file is named exactly `.env`.
+- [ ] It is in the project root.
+- [ ] It contains `OPENAI_API_KEY=<secret>` when that is the variable expected by the project.
+- [ ] The file is saved.
+- [ ] The IDE protects the file from AI features where supported.
+- [ ] Git ignores `.env`.
+
+### Validation
+
+- [ ] The application detects the environment variable.
+- [ ] A small harmless test request succeeds.
+- [ ] Logs do not expose the key.
+- [ ] Usage and remaining credit were reviewed.
+
+---
+
+## Key Takeaways
+
+- Hosted API setup is optional if a free-tier or local-model path is supported.
+- A chat subscription and developer API access are separate services.
+- Use only a small learning budget and disable automatic recharge.
+- Treat the API key like a password connected to billing.
+- Store it in a project-root file named exactly `.env`.
+- Use the exact variable name required by the application, commonly `OPENAI_API_KEY`.
+- Save the file and ensure Git ignores it.
+- A secret-protection icon in the IDE is a good sign.
+- Never expose real credentials in source code, screenshots, logs, notebooks, Git, documentation, or AI chats.
